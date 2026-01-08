@@ -21,7 +21,7 @@ test("Get /search product", async ({ api }) => {
 test("GET /delete product", async ({ api }) => {
   const data = await api.getDeleteProduct(2);
 
-  expect(data.status()).toBe(200);
+  expect(data.status()).toBe(207);
 
   const body = await data.json();
 
