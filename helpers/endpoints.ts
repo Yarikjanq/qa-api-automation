@@ -11,3 +11,9 @@ export const PRODUCTS = {
   ADD: "/products/add",
   DELETE: "/products",
 };
+
+export const CARTS = {
+  LIST: "/carts",
+  USER: "/carts/user",
+  ADD: "/carts/add",
+};

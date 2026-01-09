@@ -1,13 +1,13 @@
 import { test, expect } from "../fixtures/auth.fixture";
 
-test("GET /all products", async ({ api }) => {
+test("should return all products", async ({ api }) => {
   const data = await api.getProducts();
 
   expect(data.status()).toBe(200);
 });
 
-test("Get /search product", async ({ api }) => {
-  const data = await api.getSearchProduct("motorcycle");
+test("should return products by search query", async ({ api }) => {
+  const data = await api.searchProducts("motorcycle");
 
   expect(data.status()).toBe(200);
 
@@ -18,8 +18,8 @@ test("Get /search product", async ({ api }) => {
   });
 });
 
-test("GET /delete product", async ({ api }) => {
-  const data = await api.getDeleteProduct(2);
+test("should delete product by id", async ({ api }) => {
+  const data = await api.deleteProduct(2);
 
   expect(data.status()).toBe(200);
 
@@ -28,8 +28,8 @@ test("GET /delete product", async ({ api }) => {
   expect(body.isDeleted).toBe(true);
 });
 
-test("sorting product", async ({ api }) => {
-  const sortedResponse = await api.sortingProduct("title", "asc");
+test("should return products sorted by title", async ({ api }) => {
+  const sortedResponse = await api.getSortedProducts("title", "asc");
   const defaultResponse = await api.getProducts();
 
   const sortedTitles = (await sortedResponse.json()).products.map(
@@ -40,4 +40,20 @@ test("sorting product", async ({ api }) => {
   );
 
   expect(sortedTitles).not.toEqual(defaultTitles);
+});
+
+test("should update product", async ({ api }) => {
+  const nameProduct = "mobile 45-xxx";
+  const data = await api.updateProduct(nameProduct, 4);
+
+  expect(data.status()).toBe(200);
+  const body = await data.json();
+
+  expect(body.title).toBe(nameProduct);
+  expect(body.id).toBe(4);
+});
+
+test("should return 404 for non-existing product", async ({ api }) => {
+  const response = await api.deleteProduct(99999);
+  expect(response.status()).toBe(404);
 });

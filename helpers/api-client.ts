@@ -1,6 +1,11 @@
 // helpers/api-client.ts
-import { request as playwrightRequest } from "@playwright/test";
+
 import * as endpoints from "./endpoints";
+
+type CartProduct = {
+  id: number;
+  quantity: number;
+};
 
 export class ApiClient {
   constructor(private request, private token?: string) {}
@@ -25,17 +30,49 @@ export class ApiClient {
     return this.request.get(endpoints.PRODUCTS.LIST);
   }
 
-  async getSearchProduct(category: string) {
+  async searchProducts(category: string) {
     return this.request.get(`${endpoints.PRODUCTS.SEARCH}?q=${category}`);
   }
 
-  async getDeleteProduct(id: number) {
+  async deleteProduct(id: number) {
     return this.request.delete(`${endpoints.PRODUCTS.DELETE}/${id}`);
   }
 
-  async sortingProduct(name: string, order: string) {
+  async getSortedProducts(name: string, order: string) {
     return this.request.get(
       `${endpoints.PRODUCTS.LIST}?sortBy=${name}&order=${order}`
     );
+  }
+
+  async updateProduct(title: string, id: number) {
+    return this.request.put(`${endpoints.PRODUCTS.LIST}/${id}`, {
+      data: { title },
+    });
+  }
+
+  async getCartsByUser(id: number) {
+    return this.request.get(`${endpoints.CARTS.USER}/${id}`);
+  }
+
+  async createCart(userId: number, products: CartProduct[]) {
+    return this.request.post(`${endpoints.CARTS.ADD}`, {
+      data: {
+        userId,
+        products,
+      },
+    });
+  }
+
+  async updateCart(userId: number, merge: boolean, products: CartProduct[]) {
+    return this.request.put(`${endpoints.CARTS.LIST}/${userId}`, {
+      data: {
+        merge,
+        products,
+      },
+    });
+  }
+
+  async deleteCart(id: number) {
+    return this.request.delete(`${endpoints.CARTS.LIST}/${id}`);
   }
 }
